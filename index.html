@@ -1007,21 +1007,41 @@ button {
   const CHAT_ID = '756739327';
 
   const dateInput = document.getElementById('dateInput');
+  const blockedDays = [8, 13, 19]; // числа месяца, которые всегда закрыты
+  let bookedDates = []; // сюда подгрузим занятые даты из чата
 
-  // Запрещенные числа месяца
-  const blockedDays = [8, 13, 19];
+  // Загружаем занятые даты из Telegram
+  async function loadBookedDates() {
+    try {
+      const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/getUpdates`);
+      const data = await res.json();
 
-  // Функция проверки доступности дат
-  function disableBlockedDates() {
-    const today = new Date();
-    dateInput.setAttribute("min", today.toISOString().split("T")[0]);
+      if (!data.ok) return;
 
+      data.result.forEach(update => {
+        if (update.message && update.message.text) {
+          const text = update.message.text;
+          // ищем "Дата: YYYY-MM-DD"
+          const match = text.match(/Дата:\s*(\d{4}-\d{2}-\d{2})/);
+          if (match) {
+            bookedDates.push(match[1]);
+          }
+        }
+      });
+
+      bookedDates = [...new Set(bookedDates)];
+      console.log("📌 Забронированные даты:", bookedDates);
+
+    } catch (err) {
+      console.error("Ошибка загрузки дат:", err);
+    }
+  }
+
+  // Проверка выбранной даты
+  function validateDate() {
     dateInput.addEventListener("input", function() {
       const chosen = new Date(this.value);
       const day = chosen.getDate();
-
-      // если дата уже забронирована или в списке запрещенных
-      const bookedDates = JSON.parse(localStorage.getItem("bookedDates") || "[]");
 
       if (blockedDays.includes(day) || bookedDates.includes(this.value)) {
         alert("Эта дата недоступна, выберите другую 🙏");
@@ -1029,7 +1049,6 @@ button {
       }
     });
   }
-  disableBlockedDates();
 
   // Отправка формы
   document.getElementById('consultationForm').addEventListener('submit', function(e) {
@@ -1059,11 +1078,6 @@ Email: ${email}
     .then(res => res.json())
     .then(data => {
       if (data.ok) {
-        // сохраняем выбранную дату в localStorage
-        const bookedDates = JSON.parse(localStorage.getItem("bookedDates") || "[]");
-        bookedDates.push(date);
-        localStorage.setItem("bookedDates", JSON.stringify(bookedDates));
-
         document.getElementById('formMessage').classList.remove('hidden');
         this.reset();
       } else {
@@ -1076,7 +1090,11 @@ Email: ${email}
       alert('Ошибка соединения!');
     });
   });
+
+  // Запускаем
+  loadBookedDates().then(validateDate);
 </script>
+
 
 
 
