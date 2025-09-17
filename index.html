@@ -995,27 +995,30 @@ button {
         <input type="text" name="name" required class="w-full px-4 py-3 rounded-lg bg-gray-900 border border-gray-700 text-white focus:ring-2 focus:ring-pink-500 focus:outline-none"/>
       </div>
 
-      <!-- Телефон с выбором страны -->
+      <!-- Страна -->
+      <div>
+        <label class="block mb-2 text-gray-300 font-medium">Страна</label>
+        <select id="countryCode" name="country" required class="w-full px-4 py-3 rounded-lg bg-gray-900 border border-gray-700 text-white focus:ring-2 focus:ring-pink-500 focus:outline-none">
+          <option value="">Выберите страну</option>
+          <option value="+7" data-length="10">🇷🇺 Россия (+7)</option>
+          <option value="+375" data-length="9">🇧🇾 Беларусь (+375)</option>
+          <option value="+380" data-length="9">🇺🇦 Украина (+380)</option>
+          <option value="+7" data-length="10">🇰🇿 Казахстан (+7)</option>
+          <option value="+996" data-length="9">🇰🇬 Кыргызстан (+996)</option>
+          <option value="+998" data-length="9">🇺🇿 Узбекистан (+998)</option>
+          <option value="+992" data-length="9">🇹🇯 Таджикистан (+992)</option>
+          <option value="+993" data-length="8">🇹🇲 Туркменистан (+993)</option>
+          <option value="+374" data-length="8">🇦🇲 Армения (+374)</option>
+          <option value="+995" data-length="9">🇬🇪 Грузия (+995)</option>
+          <option value="+994" data-length="9">🇦🇿 Азербайджан (+994)</option>
+        </select>
+      </div>
+
+      <!-- Телефон -->
       <div>
         <label class="block mb-2 text-gray-300 font-medium">Телефон</label>
-        <div class="flex space-x-2">
-          <select id="countryCode" class="px-3 py-3 rounded-lg bg-gray-900 border border-gray-700 text-white focus:ring-2 focus:ring-pink-500 focus:outline-none">
-            <option value="+7" data-length="10">🇷🇺 Россия (+7)</option>
-            <option value="+375" data-length="9">🇧🇾 Беларусь (+375)</option>
-            <option value="+7" data-length="10">🇰🇿 Казахстан (+7)</option>
-            <option value="+380" data-length="9">🇺🇦 Украина (+380)</option>
-            <option value="+996" data-length="9">🇰🇬 Кыргызстан (+996)</option>
-            <option value="+998" data-length="9">🇺🇿 Узбекистан (+998)</option>
-            <option value="+992" data-length="9">🇹🇯 Таджикистан (+992)</option>
-            <option value="+993" data-length="8">🇹🇲 Туркменистан (+993)</option>
-            <option value="+374" data-length="8">🇦🇲 Армения (+374)</option>
-            <option value="+994" data-length="9">🇦🇿 Азербайджан (+994)</option>
-            <option value="+373" data-length="8">🇲🇩 Молдова (+373)</option>
-          </select>
-          <input type="text" id="phone" name="phone" required 
-            placeholder="Введите номер"
-            class="flex-1 px-4 py-3 rounded-lg bg-gray-900 border border-gray-700 text-white focus:ring-2 focus:ring-pink-500 focus:outline-none"/>
-        </div>
+        <input type="tel" id="phoneInput" name="phone" required inputmode="numeric"
+          class="w-full px-4 py-3 rounded-lg bg-gray-900 border border-gray-700 text-white focus:ring-2 focus:ring-pink-500 focus:outline-none"/>
       </div>
 
       <div>
@@ -1049,8 +1052,10 @@ button {
   const CHAT_ID = '756739327';
 
   const dateInput = document.getElementById('dateInput');
-  const blockedDays = [8, 13, 19]; 
-  let bookedDates = []; 
+  const phoneInput = document.getElementById('phoneInput');
+  const countrySelect = document.getElementById('countryCode');
+  const blockedDays = [8, 13, 19];
+  let bookedDates = [];
 
   async function loadBookedDates() {
     try {
@@ -1069,8 +1074,6 @@ button {
       });
 
       bookedDates = [...new Set(bookedDates)];
-      console.log("📌 Забронированные даты:", bookedDates);
-
     } catch (err) {
       console.error("Ошибка загрузки дат:", err);
     }
@@ -1087,54 +1090,43 @@ button {
     });
   }
 
-  // Ограничиваем ввод только цифрами
-  const phoneInput = document.getElementById('phone');
-  const countrySelect = document.getElementById('countryCode');
-
-  phoneInput.addEventListener('input', () => {
-    phoneInput.value = phoneInput.value.replace(/\D/g, '');
-    validatePhoneLength();
+  // Ограничение длины номера в зависимости от выбранной страны
+  countrySelect.addEventListener("change", function() {
+    const selectedOption = this.options[this.selectedIndex];
+    const maxLength = selectedOption.getAttribute("data-length");
+    phoneInput.value = "";
+    phoneInput.setAttribute("maxlength", maxLength);
+    phoneInput.setAttribute("placeholder", `Введите ${maxLength} цифр`);
   });
 
-  countrySelect.addEventListener('change', validatePhoneLength);
-
-  function validatePhoneLength() {
-    const selected = countrySelect.options[countrySelect.selectedIndex];
-    if (!selected) return;
-    const length = selected.dataset.length;
-    if (phoneInput.value.length > length) {
-      phoneInput.value = phoneInput.value.slice(0, length);
-    }
-    phoneInput.maxLength = length;
-    phoneInput.placeholder = `Должно быть ${length} цифр`;
-  }
+  phoneInput.addEventListener("input", function() {
+    this.value = this.value.replace(/[^0-9]/g, '');
+  });
 
   document.getElementById('consultationForm').addEventListener('submit', function(e) {
     e.preventDefault();
 
     const topic = this.topic.value;
     const name = this.name.value;
-    const selected = countrySelect.options[countrySelect.selectedIndex];
-    const code = selected.value;
-    const length = parseInt(selected.dataset.length);
+    const countryCode = countrySelect.value;
     const phone = phoneInput.value;
-
-    if (phone.length !== length) {
-      alert(`Номер должен содержать ровно ${length} цифр`);
-      return;
-    }
-
-    const fullPhone = code + phone;
     const email = this.email.value;
     const date = this.date.value;
     const time = this.time.value;
+
+    if (!countryCode || phone.length !== parseInt(countrySelect.options[countrySelect.selectedIndex].dataset.length)) {
+      alert("Введите корректный номер телефона 📱");
+      return;
+    }
+
+    const fullPhone = countryCode + phone;
 
     const message = `
 📩 Новая заявка на консультацию
 Актуальный запрос: ${topic}
 Имя: ${name}
 Телефон: ${fullPhone}
-Ссылка: https://t.me/+${fullPhone.replace('+','')}
+Ссылка: https://t.me/+${fullPhone}
 Email: ${email}
 Дата: ${date}
 Время: ${time}
@@ -1166,6 +1158,7 @@ Email: ${email}
 
   loadBookedDates().then(validateDate);
 </script>
+
 
 
 
