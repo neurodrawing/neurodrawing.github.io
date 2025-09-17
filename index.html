@@ -968,6 +968,7 @@ button {
 </div>
 </section>
 
+
 <!-- Consultation Section -->
 <section class="min-h-screen py-20 bg-gradient-to-b from-gray-900 to-indigo-900 relative overflow-hidden" id="consultation">
   <div class="max-w-3xl mx-auto px-4 relative z-10 page-transition">
@@ -977,14 +978,46 @@ button {
     <div class="w-20 h-1 bg-pink-500 mx-auto my-6"></div>
     
     <form id="consultationForm" class="bg-gray-800 bg-opacity-60 p-8 rounded-2xl shadow-xl space-y-6">
+      
+      <!-- Новый блок -->
+      <div>
+        <label class="block mb-2 text-gray-300 font-medium">Какой запрос для Вас наиболее актуален сейчас?</label>
+        <select name="topic" required class="w-full px-4 py-3 rounded-lg bg-gray-900 border border-gray-700 text-white focus:ring-2 focus:ring-pink-500 focus:outline-none">
+          <option value="">Выберите вариант</option>
+          <option value="Самооценка">Самооценка</option>
+          <option value="Тревога">Тревога</option>
+          <option value="Мотивация">Мотивация</option>
+        </select>
+      </div>
+
       <div>
         <label class="block mb-2 text-gray-300 font-medium">Имя</label>
         <input type="text" name="name" required class="w-full px-4 py-3 rounded-lg bg-gray-900 border border-gray-700 text-white focus:ring-2 focus:ring-pink-500 focus:outline-none"/>
       </div>
+
+      <!-- Телефон с выбором страны -->
       <div>
         <label class="block mb-2 text-gray-300 font-medium">Телефон</label>
-        <input type="tel" name="phone" required class="w-full px-4 py-3 rounded-lg bg-gray-900 border border-gray-700 text-white focus:ring-2 focus:ring-pink-500 focus:outline-none"/>
+        <div class="flex space-x-2">
+          <select id="countryCode" class="px-3 py-3 rounded-lg bg-gray-900 border border-gray-700 text-white focus:ring-2 focus:ring-pink-500 focus:outline-none">
+            <option value="+7" data-length="10">🇷🇺 Россия (+7)</option>
+            <option value="+375" data-length="9">🇧🇾 Беларусь (+375)</option>
+            <option value="+7" data-length="10">🇰🇿 Казахстан (+7)</option>
+            <option value="+380" data-length="9">🇺🇦 Украина (+380)</option>
+            <option value="+996" data-length="9">🇰🇬 Кыргызстан (+996)</option>
+            <option value="+998" data-length="9">🇺🇿 Узбекистан (+998)</option>
+            <option value="+992" data-length="9">🇹🇯 Таджикистан (+992)</option>
+            <option value="+993" data-length="8">🇹🇲 Туркменистан (+993)</option>
+            <option value="+374" data-length="8">🇦🇲 Армения (+374)</option>
+            <option value="+994" data-length="9">🇦🇿 Азербайджан (+994)</option>
+            <option value="+373" data-length="8">🇲🇩 Молдова (+373)</option>
+          </select>
+          <input type="text" id="phone" name="phone" required 
+            placeholder="Введите номер"
+            class="flex-1 px-4 py-3 rounded-lg bg-gray-900 border border-gray-700 text-white focus:ring-2 focus:ring-pink-500 focus:outline-none"/>
+        </div>
       </div>
+
       <div>
         <label class="block mb-2 text-gray-300 font-medium">Email</label>
         <input type="email" name="email" required class="w-full px-4 py-3 rounded-lg bg-gray-900 border border-gray-700 text-white focus:ring-2 focus:ring-pink-500 focus:outline-none"/>
@@ -1019,12 +1052,10 @@ button {
   const blockedDays = [8, 13, 19]; 
   let bookedDates = []; 
 
-  // Загружаем занятые даты из Telegram
   async function loadBookedDates() {
     try {
       const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/getUpdates`);
       const data = await res.json();
-
       if (!data.ok) return;
 
       data.result.forEach(update => {
@@ -1045,12 +1076,10 @@ button {
     }
   }
 
-  // Проверка выбранной даты
   function validateDate() {
     dateInput.addEventListener("input", function() {
       const chosen = new Date(this.value);
       const day = chosen.getDate();
-
       if (blockedDays.includes(day) || bookedDates.includes(this.value)) {
         alert("Эта дата недоступна, выберите другую 🙏");
         this.value = "";
@@ -1058,33 +1087,54 @@ button {
     });
   }
 
-  // Приведение телефона к формату для Telegram
-  function formatPhone(phone) {
-    let clean = phone.replace(/\s+/g, '').replace(/[^0-9+]/g, ''); // убрать лишние символы
-    if (!clean.startsWith('+')) {
-      clean = '+' + clean;
+  // Ограничиваем ввод только цифрами
+  const phoneInput = document.getElementById('phone');
+  const countrySelect = document.getElementById('countryCode');
+
+  phoneInput.addEventListener('input', () => {
+    phoneInput.value = phoneInput.value.replace(/\D/g, '');
+    validatePhoneLength();
+  });
+
+  countrySelect.addEventListener('change', validatePhoneLength);
+
+  function validatePhoneLength() {
+    const selected = countrySelect.options[countrySelect.selectedIndex];
+    if (!selected) return;
+    const length = selected.dataset.length;
+    if (phoneInput.value.length > length) {
+      phoneInput.value = phoneInput.value.slice(0, length);
     }
-    if (!clean.startsWith('+7')) {
-      clean = '+7' + clean.replace(/^\+/, '');
-    }
-    return clean;
+    phoneInput.maxLength = length;
+    phoneInput.placeholder = `Должно быть ${length} цифр`;
   }
 
-  // Отправка формы
   document.getElementById('consultationForm').addEventListener('submit', function(e) {
     e.preventDefault();
 
+    const topic = this.topic.value;
     const name = this.name.value;
-    const phone = formatPhone(this.phone.value);
+    const selected = countrySelect.options[countrySelect.selectedIndex];
+    const code = selected.value;
+    const length = parseInt(selected.dataset.length);
+    const phone = phoneInput.value;
+
+    if (phone.length !== length) {
+      alert(`Номер должен содержать ровно ${length} цифр`);
+      return;
+    }
+
+    const fullPhone = code + phone;
     const email = this.email.value;
     const date = this.date.value;
     const time = this.time.value;
 
     const message = `
 📩 Новая заявка на консультацию
+Актуальный запрос: ${topic}
 Имя: ${name}
-Телефон: ${phone}
-Ссылка: https://t.me/${phone}
+Телефон: ${fullPhone}
+Ссылка: https://t.me/+${fullPhone.replace('+','')}
 Email: ${email}
 Дата: ${date}
 Время: ${time}
@@ -1114,9 +1164,9 @@ Email: ${email}
     });
   });
 
-  // Запускаем
   loadBookedDates().then(validateDate);
 </script>
+
 
 
 
