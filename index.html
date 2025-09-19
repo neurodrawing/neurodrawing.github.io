@@ -970,194 +970,104 @@ button {
 
 
 <!-- Consultation Section -->
-<section class="min-h-screen py-20 bg-gradient-to-b from-gray-900 to-indigo-900 relative overflow-hidden" id="consultation">
-  <div class="max-w-3xl mx-auto px-4 relative z-10 page-transition">
-    <h2 class="text-3xl md:text-5xl font-extrabold text-center mb-8 text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
-      Запись на бесплатную онлайн-консультацию
-    </h2>
-    <div class="w-20 h-1 bg-pink-500 mx-auto my-6"></div>
-    
-    <form id="consultationForm" class="bg-gray-800 bg-opacity-60 p-8 rounded-2xl shadow-xl space-y-6">
-      
-      <!-- Новый блок -->
+<section class="min-h-screen py-20 bg-gray-50" id="consultation">
+  <div class="max-w-3xl mx-auto px-6">
+    <h2 class="text-3xl font-bold text-center mb-8">Записаться на онлайн-консультацию</h2>
+
+    <form id="consultationForm" class="space-y-6 bg-white p-6 rounded-2xl shadow-md">
+      <!-- Тема -->
       <div>
-        <label class="block mb-2 text-gray-300 font-medium">Какой запрос для Вас наиболее актуален сейчас?</label>
-        <select name="topic" required class="w-full px-4 py-3 rounded-lg bg-gray-900 border border-gray-700 text-white focus:ring-2 focus:ring-pink-500 focus:outline-none">
-          <option value="">Выберите вариант</option>
-          <option value="Самооценка">Самооценка</option>
-          <option value="Тревога">Тревога</option>
-          <option value="Мотивация">Мотивация</option>
-        </select>
+        <label class="block font-medium mb-2">Актуальный запрос</label>
+        <input type="text" name="topic" required
+          class="w-full border rounded-lg p-3 focus:ring focus:ring-blue-200">
       </div>
 
+      <!-- Имя -->
       <div>
-        <label class="block mb-2 text-gray-300 font-medium">Имя</label>
-        <input type="text" name="name" required class="w-full px-4 py-3 rounded-lg bg-gray-900 border border-gray-700 text-white focus:ring-2 focus:ring-pink-500 focus:outline-none"/>
-      </div>
-
-      <!-- Страна -->
-      <div>
-        <label class="block mb-2 text-gray-300 font-medium">Страна</label>
-        <select id="countryCode" name="country" required class="w-full px-4 py-3 rounded-lg bg-gray-900 border border-gray-700 text-white focus:ring-2 focus:ring-pink-500 focus:outline-none">
-          <option value="">Выберите страну</option>
-          <option value="+7" data-length="10">🇷🇺 Россия (+7)</option>
-          <option value="+375" data-length="9">🇧🇾 Беларусь (+375)</option>
-          <option value="+380" data-length="9">🇺🇦 Украина (+380)</option>
-          <option value="+7" data-length="10">🇰🇿 Казахстан (+7)</option>
-          <option value="+996" data-length="9">🇰🇬 Кыргызстан (+996)</option>
-          <option value="+998" data-length="9">🇺🇿 Узбекистан (+998)</option>
-          <option value="+992" data-length="9">🇹🇯 Таджикистан (+992)</option>
-          <option value="+993" data-length="8">🇹🇲 Туркменистан (+993)</option>
-          <option value="+374" data-length="8">🇦🇲 Армения (+374)</option>
-          <option value="+995" data-length="9">🇬🇪 Грузия (+995)</option>
-          <option value="+994" data-length="9">🇦🇿 Азербайджан (+994)</option>
-        </select>
+        <label class="block font-medium mb-2">Имя</label>
+        <input type="text" name="name" required
+          class="w-full border rounded-lg p-3 focus:ring focus:ring-blue-200">
       </div>
 
       <!-- Телефон -->
       <div>
-        <label class="block mb-2 text-gray-300 font-medium">Телефон</label>
-        <input type="tel" id="phoneInput" name="phone" required inputmode="numeric"
-          class="w-full px-4 py-3 rounded-lg bg-gray-900 border border-gray-700 text-white focus:ring-2 focus:ring-pink-500 focus:outline-none"/>
+        <label class="block font-medium mb-2">Телефон</label>
+        <div class="flex gap-2">
+          <!-- Селект страны -->
+          <select id="countrySelect" class="border rounded-lg p-3 focus:ring focus:ring-blue-200 w-28">
+            <option value="+7" data-length="10">🇷🇺 +7</option>
+            <option value="+375" data-length="9">🇧🇾 +375</option>
+            <option value="+380" data-length="9">🇺🇦 +380</option>
+            <option value="+7" data-length="10">🇰🇿 +7</option>
+            <option value="+374" data-length="8">🇦🇲 +374</option>
+            <option value="+994" data-length="9">🇦🇿 +994</option>
+            <option value="+996" data-length="9">🇰🇬 +996</option>
+            <option value="+373" data-length="8">🇲🇩 +373</option>
+            <option value="+992" data-length="9">🇹🇯 +992</option>
+            <option value="+993" data-length="8">🇹🇲 +993</option>
+            <option value="+998" data-length="9">🇺🇿 +998</option>
+          </select>
+
+          <!-- Поле ввода -->
+          <input type="text" id="phoneInput" name="phone" required
+            placeholder="Номер без кода"
+            class="flex-1 border rounded-lg p-3 focus:ring focus:ring-blue-200"
+            pattern="[0-9]+" />
+        </div>
       </div>
 
+      <!-- Email -->
       <div>
-        <label class="block mb-2 text-gray-300 font-medium">Email</label>
-        <input type="email" name="email" required class="w-full px-4 py-3 rounded-lg bg-gray-900 border border-gray-700 text-white focus:ring-2 focus:ring-pink-500 focus:outline-none"/>
+        <label class="block font-medium mb-2">Email</label>
+        <input type="email" name="email" required
+          class="w-full border rounded-lg p-3 focus:ring focus:ring-blue-200">
       </div>
+
+      <!-- Дата -->
       <div>
-        <label class="block mb-2 text-gray-300 font-medium">Удобный день</label>
-        <input type="date" name="date" id="dateInput" required class="w-full px-4 py-3 rounded-lg bg-gray-900 border border-gray-700 text-white focus:ring-2 focus:ring-pink-500 focus:outline-none"/>
+        <label class="block font-medium mb-2">Дата консультации</label>
+        <input type="date" name="date" required
+          class="w-full border rounded-lg p-3 focus:ring focus:ring-blue-200">
       </div>
+
+      <!-- Время -->
       <div>
-        <label class="block mb-2 text-gray-300 font-medium">Время консультации</label>
-        <select name="time" required class="w-full px-4 py-3 rounded-lg bg-gray-900 border border-gray-700 text-white focus:ring-2 focus:ring-pink-500 focus:outline-none">
-          <option value="">Выберите время</option>
-          <option value="09:00 - 14:00">09:00 - 14:00</option>
-          <option value="14:00 - 19:00">14:00 - 18:00</option>
-          <option value="19:00 - 23:00">18:00 - 22:00</option>
-        </select>
+        <label class="block font-medium mb-2">Время консультации</label>
+        <input type="time" name="time" required
+          class="w-full border rounded-lg p-3 focus:ring focus:ring-blue-200">
       </div>
-      <button type="submit" class="w-full py-3 rounded-lg bg-gradient-to-r from-pink-600 to-purple-600 text-white font-semibold hover:from-pink-700 hover:to-purple-700 transition-all duration-300">
+
+      <!-- Кнопка -->
+      <button type="submit"
+        class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700">
         Отправить заявку
       </button>
-    </form>
 
-    <p id="formMessage" class="text-center text-green-400 mt-6 hidden">Спасибо! Ваша заявка отправлена ✅</p>
+      <p id="formMessage" class="hidden text-green-600 font-medium mt-4 text-center">
+        ✅ Заявка успешно отправлена!
+      </p>
+    </form>
   </div>
 </section>
 
 <script>
-  const TELEGRAM_TOKEN = '8111953821:AAHnWXSXqN8HohgjIzrFiUosMdc6MmKLKdY';
-  const CHAT_ID = '756739327';
+const countrySelect = document.getElementById('countrySelect');
+const phoneInput = document.getElementById('phoneInput');
 
-  const dateInput = document.getElementById('dateInput');
-  const phoneInput = document.getElementById('phoneInput');
-  const countrySelect = document.getElementById('countryCode');
-  const blockedDays = [8, 13, 19];
-  let bookedDates = [];
+countrySelect.addEventListener('change', () => {
+  phoneInput.value = '';
+  phoneInput.maxLength = countrySelect.options[countrySelect.selectedIndex].dataset.length;
+});
 
-  async function loadBookedDates() {
-    try {
-      const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/getUpdates`);
-      const data = await res.json();
-      if (!data.ok) return;
-
-      data.result.forEach(update => {
-        if (update.message && update.message.text) {
-          const text = update.message.text;
-          const match = text.match(/Дата:\s*(\d{4}-\d{2}-\d{2})/);
-          if (match) {
-            bookedDates.push(match[1]);
-          }
-        }
-      });
-
-      bookedDates = [...new Set(bookedDates)];
-    } catch (err) {
-      console.error("Ошибка загрузки дат:", err);
-    }
+phoneInput.addEventListener('input', () => {
+  phoneInput.value = phoneInput.value.replace(/\D/g, ''); // только цифры
+  const maxLen = parseInt(countrySelect.options[countrySelect.selectedIndex].dataset.length);
+  if (phoneInput.value.length > maxLen) {
+    phoneInput.value = phoneInput.value.slice(0, maxLen);
   }
-
-  function validateDate() {
-    dateInput.addEventListener("input", function() {
-      const chosen = new Date(this.value);
-      const day = chosen.getDate();
-      if (blockedDays.includes(day) || bookedDates.includes(this.value)) {
-        alert("Эта дата недоступна, выберите другую 🙏");
-        this.value = "";
-      }
-    });
-  }
-
-  // Ограничение длины номера в зависимости от выбранной страны
-  countrySelect.addEventListener("change", function() {
-    const selectedOption = this.options[this.selectedIndex];
-    const maxLength = selectedOption.getAttribute("data-length");
-    phoneInput.value = "";
-    phoneInput.setAttribute("maxlength", maxLength);
-    phoneInput.setAttribute("placeholder", `Введите ${maxLength} цифр`);
-  });
-
-  phoneInput.addEventListener("input", function() {
-    this.value = this.value.replace(/[^0-9]/g, '');
-  });
-
-  document.getElementById('consultationForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    const topic = this.topic.value;
-    const name = this.name.value;
-    const countryCode = countrySelect.value;
-    const phone = phoneInput.value;
-    const email = this.email.value;
-    const date = this.date.value;
-    const time = this.time.value;
-
-    if (!countryCode || phone.length !== parseInt(countrySelect.options[countrySelect.selectedIndex].dataset.length)) {
-      alert("Введите корректный номер телефона 📱");
-      return;
-    }
-
-    const fullPhone = countryCode + phone;
-
-    const message = `
-📩 Новая заявка на консультацию
-Актуальный запрос: ${topic}
-Имя: ${name}
-Телефон: ${fullPhone}
-Ссылка: https://t.me/+${fullPhone}
-Email: ${email}
-Дата: ${date}
-Время: ${time}
-`;
-
-    fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        chat_id: CHAT_ID,
-        text: message
-      })
-    })
-    .then(res => res.json())
-    .then(data => {
-      if (data.ok) {
-        document.getElementById('formMessage').classList.remove('hidden');
-        this.reset();
-      } else {
-        alert('Ошибка отправки! Попробуйте позже.');
-        console.error(data);
-      }
-    })
-    .catch(err => {
-      console.error(err);
-      alert('Ошибка соединения!');
-    });
-  });
-
-  loadBookedDates().then(validateDate);
+});
 </script>
+
 
 
 
